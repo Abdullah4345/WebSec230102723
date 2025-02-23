@@ -24,6 +24,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/multiplication-table">Multiplication Table</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/bill">Bill</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/transcript">Transcript</a>
+                </li>
             </ul>
         </div>
     </nav>

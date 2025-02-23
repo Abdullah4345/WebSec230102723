@@ -14,3 +14,9 @@ Route::get('/prime-numbers', function () {
 Route::get('/multiplication-table', function () {
     return view('multiplication_table');
 });
+Route::get('/bill', function () {
+    return view('bill');
+});
+Route::get('/transcript', function () {
+    return view('Transcript');
+});
