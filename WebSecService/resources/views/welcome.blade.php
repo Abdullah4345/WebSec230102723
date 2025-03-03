@@ -28,7 +28,13 @@
                     <a class="nav-link" href="/bill">Bill</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/transcript">Transcript</a>
+                    <a class="nav-link" href="/">Grade</a>
+                    <li class="nav-item">
+                    <a class="nav-link" href="/">User</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/transcript">Transcipt</a>
+
                 </li>
             </ul>
         </div>

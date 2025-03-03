@@ -20,3 +20,9 @@ Route::get('/bill', function () {
 Route::get('/transcript', function () {
     return view('Transcript');
 });
+Route::get('/CRUDuser', function () {
+    return view('User');
+});
+Route::get('/CURDtable', function () {
+    return view('Table');
+});
