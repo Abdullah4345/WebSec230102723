@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebSecController;
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 Route::get('/even-numbers', function () {
     return view('even_numbers');
@@ -39,3 +39,9 @@ Route::get('/login', function () {
 });
 
 Route::post('/login', [WebSecController::class, 'login']);
+
+Route::get('/logout', [WebSecController::class, 'logout'])->name('logout');
+
+Route::get('/home', function () {
+    return view('home');
+});
