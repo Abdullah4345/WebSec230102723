@@ -5,6 +5,12 @@
     <h1>Grades</h1>
     <a href="{{ route('grades.create') }}" class="btn btn-primary mb-3">Create New Grade</a>
 
+    @if (auth()->check())
+        <a href="{{ route('students.create') }}" class="btn btn-secondary mb-3">Add Student</a>
+        <a href="{{ route('students.index') }}" class="btn btn-secondary mb-3">Manage Students</a>
+        <a href="{{ route('grades.index') }}" class="btn btn-secondary mb-3">Manage Grades</a>
+    @endif
+
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -43,7 +49,19 @@
         <p><strong>Term GPA:</strong> {{ number_format($termGPA[$term], 2) }}</p>
     @endforeach
 
-    <h3>Cumulative GPA (CGPA): {{ number_format($cgpa, 2) }}</h3>
-    <h3>Cumulative Credit Hours (CCH): {{ $cch }}</h3>
+    @foreach($students as $student)
+        <div>
+            <h3>Student: {{ $student['name'] }}</h3>
+            <p>Cumulative GPA (CGPA): {{ isset($studentCGPA[$student['id']]) ? number_format($studentCGPA[$student['id']], 2) : '0.00' }}</p>
+            <p>Cumulative Credit Hours (CCH): {{ $studentCCH[$student['id']] ?? 0 }}</p>
+        </div>
+    @endforeach
+
+    @if(auth()->check())
+        @php
+            $userCgpa = isset($studentCGPA[auth()->id()]) ? $studentCGPA[auth()->id()] : 0;
+        @endphp
+        <h3>Cumulative GPA: {{ number_format($userCgpa, 2) }}</h3>
+    @endif
 </div>
 @endsection

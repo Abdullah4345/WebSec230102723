@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class WebSecController extends Controller
 {
-    private $csvFile = 'accounts.csv';
+    private $jsonFile = 'accounts.json';
 
     public function register(Request $request)
     {
@@ -29,16 +30,16 @@ class WebSecController extends Controller
         // Hash the password
         $hashedPassword = Hash::make($validated['password']);
 
-        // Save user to CSV
+        // Save user to JSON
         $userData = [
-            $validated['name'],
-            $validated['email'],
-            $hashedPassword
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $hashedPassword
         ];
 
-        $fp = fopen(storage_path($this->csvFile), 'a');
-        fputcsv($fp, $userData);
-        fclose($fp);
+        $users = $this->getUsers();
+        $users[] = $userData;
+        Storage::put($this->jsonFile, json_encode($users));
 
         return redirect('/register')->with('message', "Registration successful for {$validated['name']}.");
     }
@@ -50,7 +51,7 @@ class WebSecController extends Controller
             'password' => 'required',
         ]);
 
-        // Read CSV and check credentials
+        // Read JSON and check credentials
         if ($userData = $this->checkCredentials($credentials['email'], $credentials['password'])) {
             $request->session()->regenerate();
             
@@ -86,55 +87,51 @@ class WebSecController extends Controller
 
     private function emailExists($email)
     {
-        if (!file_exists(storage_path($this->csvFile))) {
-            return false;
-        }
-
-        $fp = fopen(storage_path($this->csvFile), 'r');
-        while (($data = fgetcsv($fp)) !== false) {
-            if ($data[1] === $email) {
-                fclose($fp);
+        $users = $this->getUsers();
+        foreach ($users as $user) {
+            if ($user['email'] === $email) {
                 return true;
             }
         }
-        fclose($fp);
         return false;
     }
 
     private function checkCredentials($email, $password)
     {
-        $filepath = storage_path($this->csvFile);
-        if (!file_exists($filepath)) {
-            \Log::error('CSV file not found at: ' . $filepath);
-            return false;
-        }
-
-        $fp = fopen($filepath, 'r');
-        while (($data = fgetcsv($fp)) !== false) {
-            \Log::info('Reading CSV row:', [
-                'name' => $data[0],
-                'email' => $data[1],
-                'stored_hash' => $data[2]
+        $users = $this->getUsers();
+        foreach ($users as $user) {
+            \Log::info('Reading JSON user:', [
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'stored_hash' => $user['password']
             ]);
 
-            if ($data[1] === $email) {
-                $matches = Hash::check($password, $data[2]);
+            if ($user['email'] === $email) {
+                $matches = Hash::check($password, $user['password']);
                 \Log::info('Password check:', [
                     'email_matched' => true,
                     'password_matched' => $matches
                 ]);
-                fclose($fp);
-                
+
                 if ($matches) {
                     return [
-                        'name' => $data[0],
-                        'email' => $data[1]
+                        'name' => $user['name'],
+                        'email' => $user['email']
                     ];
                 }
                 return false;
             }
         }
-        fclose($fp);
         return false;
+    }
+
+    private function getUsers()
+    {
+        if (!Storage::exists($this->jsonFile)) {
+            return [];
+        }
+
+        $json = Storage::get($this->jsonFile);
+        return json_decode($json, true);
     }
 }

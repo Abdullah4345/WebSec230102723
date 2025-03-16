@@ -7,6 +7,9 @@
                 <h1>Welcome, {{ session('user')['name'] }}!</h1>
                 <p>You are logged in with {{ session('user')['email'] }}</p>
                 <a href="{{ url('/logout') }}" class="btn btn-danger">Logout</a>
+                <a href="{{ route('students.create') }}" class="btn btn-secondary mb-3">Add Student</a>
+                <a href="{{ route('students.index') }}" class="btn btn-secondary mb-3">Manage Students</a>
+                <a href="{{ route('grades.index') }}" class="btn btn-secondary mb-3">Manage Grades</a>
             </div>
         @else
             <div style="text-align: center; margin-top: 50px;">

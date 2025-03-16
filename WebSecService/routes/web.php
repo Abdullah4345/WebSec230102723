@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebSecController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserController;
+
 Route::get('/', function () {
     return redirect('/home');
 });
@@ -27,7 +31,6 @@ Route::get('/CURDtable', function () {
     return view('Table');
 });
 
-
 Route::get('/register', function () {
     return view('register');
 });
@@ -45,3 +48,7 @@ Route::get('/logout', [WebSecController::class, 'logout'])->name('logout');
 Route::get('/home', function () {
     return view('home');
 });
+
+Route::resource('students', StudentController::class);
+Route::resource('grades', GradeController::class);
+Route::resource('users', UserController::class);
