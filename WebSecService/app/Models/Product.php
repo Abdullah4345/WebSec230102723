@@ -5,12 +5,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model  {
 
-	protected $fillable = [
+    protected $fillable = [
         'code',
         'name',
-        'price',
         'model',
         'description',
+        'price',
+        'quantity',
         'photo'
     ];
+
+    protected $appends = ['stock_status'];
+    
+    public function getStockStatusAttribute()
+    {
+        return $this->quantity > 0 ? 'In Stock' : 'Out of Stock';
+    }
+
 }

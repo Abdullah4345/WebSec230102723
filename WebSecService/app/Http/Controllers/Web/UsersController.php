@@ -34,7 +34,7 @@ class UsersController extends Controller {
 
     	try {
     		$this->validate($request, [
-	        'name' => ['required', 'string', 'min:5'],
+	        'name' => ['required', 'string', 'min:4'],
 	        'email' => ['required', 'email', 'unique:users'],
 	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
 	    	]);

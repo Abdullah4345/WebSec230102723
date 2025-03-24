@@ -18,30 +18,32 @@ Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 //Route::post('users/save_password/{user}', [UsersController::class, 'JINX'])->name('JINX');
 
-
-
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
 Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
+Route::get('products/purchases', [ProductsController::class, 'purchaseHistory'])->name('purchases_history');
+
+Route::post('/api/products/{product}/quantity', [ProductsController::class, 'updateQuantity'])->name('products_update_quantity');
+Route::post('/api/products/{product}/buy', [ProductsController::class, 'buy'])->name('products_buy');
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/multable', function (Request $request) {
-    $j = $request->number??5;
-    $msg = $request->msg;
-    return view('multable', compact("j", "msg"));
-});
+// Route::get('/multable', function (Request $request) {
+//     $j = $request->number??5;
+//     $msg = $request->msg;
+//     return view('multable', compact("j", "msg"));
+// });
 
-Route::get('/even', function () {
-    return view('even');
-});
+// Route::get('/even', function () {
+//     return view('even');
+// });
 
-Route::get('/prime', function () {
-    return view('prime');
-});
+// Route::get('/prime', function () {
+//     return view('prime');
+// });
 
 Route::get('/test', function () {
     return view('test');

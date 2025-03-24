@@ -1,0 +1,39 @@
+.navbar-custom {
+  background-color: #324ab2 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.navbar-custom .container-fluid {
+  background-color: #324ab2;
+  padding: 0.5rem 1rem;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+.navbar-custom .navbar-nav {
+  background-color: #324ab2;
+}
+
+/* body {
+  background-color: #060b21;
+} */
+
+/* Dark theme styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.navbar-custom.dark-mode {
+  background-color: #1f1f1f !important;
+}
+
+.navbar-custom .container-fluid.dark-mode {
+  background-color: #1f1f1f;
+}
+
+.navbar-custom .navbar-nav.dark-mode {
+  background-color: #1f1f1f;
+}
