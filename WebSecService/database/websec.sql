@@ -196,6 +196,10 @@ INSERT INTO `permissions` (`id`, `name`, `display_name`, `guard_name`, `created_
 (5, 'edit_users', 'Edit Users', 'web', NULL, NULL),
 (7, 'delete_users', 'Delete Users', 'web', NULL, NULL),
 (8, 'admin_users', 'Admin Users', 'web', NULL, NULL);
+(9, 'show_students', 'Show Students', 'web', NULL, NULL);
+(10, 'edit_students', 'Edit Students', 'web', NULL, NULL);
+(11, 'admin_students', 'Admin Students', 'web', NULL, NULL);
+(12, 'delete_students', 'Delete Students', 'web', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -325,7 +329,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Ahmed Saleh', 'mohamed.saleh@sut.edu.eg', NULL, '$2y$12$m78btxkNuRqATbSA./OekeNN92QZtLqMPCUuE0vPGl/jLavPdSg0e', NULL, '2025-03-10 16:34:55', '2025-03-18 00:45:51'),
+(1, 'Ahmed Saleh', 'mohamed.saleh@sut.edu.eg', NULL, '$2y$12$/Lc03GGp22pKtSQtGRBkPONliCa61/Mxy0RA4s1WR363KeCBCnVk2', NULL, '2025-03-10 16:34:55', '2025-03-18 00:45:51'),
 (16, 'Ahmed Ali Said', 'malisobh2010@gmail.com', NULL, '$2y$12$cHhB7KEnGMKN2rrvmdX2POhwTv5yJC/wurAoHl8h/JAFGC5ZMezVi', NULL, '2025-03-11 05:32:37', '2025-03-18 01:54:30'),
 (17, 'Nader Mohsen', 'nader.mohsen@gmail.com', NULL, '$2y$12$XKRIjZp2dELynmiLUgjWI.ecYWUeM3peE34SKh8/jYotKLaSy2EGS', NULL, '2025-03-18 01:02:26', '2025-03-18 01:59:02');
 

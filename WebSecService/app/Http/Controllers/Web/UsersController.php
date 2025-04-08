@@ -18,41 +18,55 @@ class UsersController extends Controller {
 	use ValidatesRequests;
 
     public function list(Request $request) {
-        if(!auth()->user()->hasPermissionTo('show_users'))abort(401);
+        if (!auth()->user()->hasPermissionTo('show_users')) {
+            abort(401);
+        }
+    
         $query = User::select('*');
-        $query->when($request->keywords, 
-        fn($q)=> $q->where("name", "like", "%$request->keywords%"));
+    
+        if (!auth()->user()->hasPermissionTo('admin_users')) {
+            $query->whereHas('roles', function ($q) {
+                $q->where('name', 'Customer');
+            });
+        }
+        $query->when($request->keywords, function ($q) use ($request) {
+            $q->where("name", "like", "%{$request->keywords}%");
+        });
+    
         $users = $query->get();
+    
         return view('users.list', compact('users'));
     }
+       
 
 	public function register(Request $request) {
         return view('users.register');
     }
 
     public function doRegister(Request $request) {
-
-    	try {
-    		$this->validate($request, [
-	        'name' => ['required', 'string', 'min:5'],
-	        'email' => ['required', 'email', 'unique:users'],
-	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
-	    	]);
-    	}
-    	catch(\Exception $e) {
-
-    		return redirect()->back()->withInput($request->input())->withErrors('Invalid registration information.');
-    	}
-
-    	
-    	$user =  new User();
-	    $user->name = $request->name;
-	    $user->email = $request->email;
-	    $user->password = bcrypt($request->password); //Secure
-	    $user->save();
-
-        return redirect('/');
+        try {
+            $this->validate($request, [
+                'name' => ['required', 'string', 'min:5'],
+                'email' => ['required', 'email', 'unique:users'],
+                'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors([$e->getMessage()]);
+        }
+    
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password); 
+        $user->save();
+    
+        $user->assignRole('Customer');
+    
+        Auth::login($user);
+    
+        return redirect('/products')->with('success', 'Registration successful!');
     }
+    
 
     public function login(Request $request) {
         return view('users.login');
@@ -150,6 +164,18 @@ class UsersController extends Controller {
 
         return redirect()->route('users');
     }
+    public function addCredit(Request $request) {
+        $request->validate([
+            'amount' => ['required', 'numeric', 'min:1']
+        ]);
+    
+        $user = auth()->user();
+        $user->credit += $request->amount;
+        $user->save();
+    
+        return redirect()->back()->with('success', 'Credit added successfully!');
+    }
+    
 
     public function editPassword(Request $request, User $user = null) {
 

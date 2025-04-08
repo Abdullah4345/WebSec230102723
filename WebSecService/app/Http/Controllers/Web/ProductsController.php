@@ -37,6 +37,29 @@ class ProductsController extends Controller {
 
 		return view('products.list', compact('products'));
 	}
+	public function buyProduct(Request $request, $id) {
+		$product = Product::findOrFail($id);
+		$user = auth()->user();
+	
+		if ($user->credit < $product->price) {
+			return redirect()->back()->with('error', 'Not enough credit to purchase this product.');
+		}
+	
+		if ($product->quantity <= 0) {
+			return redirect()->back()->with('error', 'This product is out of stock.');
+		}
+	
+		$product->quantity -= 1;
+		$product->save();
+	
+		$user->credit -= $product->price;
+		$user->save();
+	
+		return redirect()->back()->with('success', 'Purchase successful!');
+	}
+	
+	
+	
 
 	public function edit(Request $request, Product $product = null) {
 
@@ -54,6 +77,7 @@ class ProductsController extends Controller {
 	        'name' => ['required', 'string', 'max:128'],
 	        'model' => ['required', 'string', 'max:256'],
 	        'description' => ['required', 'string', 'max:1024'],
+			'quantity' => ['required', 'numeric'],
 	        'price' => ['required', 'numeric'],
 	    ]);
 

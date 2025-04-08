@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\Web\\ProductsController' => $baseDir . '/app/Http/Controllers/Web/ProductsController.php',
+    'App\\Http\\Controllers\\Web\\StudentsController' => $baseDir . '/app/Http/Controllers/Web/StudentsController.php',
     'App\\Http\\Controllers\\Web\\UsersController' => $baseDir . '/app/Http/Controllers/Web/UsersController.php',
     'App\\Models\\Product' => $baseDir . '/app/Models/Product.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
@@ -3072,6 +3073,7 @@ return array(
     'Monolog\\Registry' => $vendorDir . '/monolog/monolog/src/Monolog/Registry.php',
     'Monolog\\ResettableInterface' => $vendorDir . '/monolog/monolog/src/Monolog/ResettableInterface.php',
     'Monolog\\SignalHandler' => $vendorDir . '/monolog/monolog/src/Monolog/SignalHandler.php',
+    'Monolog\\Test\\MonologTestCase' => $vendorDir . '/monolog/monolog/src/Monolog/Test/MonologTestCase.php',
     'Monolog\\Test\\TestCase' => $vendorDir . '/monolog/monolog/src/Monolog/Test/TestCase.php',
     'Monolog\\Utils' => $vendorDir . '/monolog/monolog/src/Monolog/Utils.php',
     'Nette\\ArgumentOutOfRangeException' => $vendorDir . '/nette/utils/src/exceptions.php',
@@ -3102,6 +3104,7 @@ return array(
     'Nette\\Schema\\Processor' => $vendorDir . '/nette/schema/src/Schema/Processor.php',
     'Nette\\Schema\\Schema' => $vendorDir . '/nette/schema/src/Schema/Schema.php',
     'Nette\\Schema\\ValidationException' => $vendorDir . '/nette/schema/src/Schema/ValidationException.php',
+    'Nette\\ShouldNotHappenException' => $vendorDir . '/nette/utils/src/exceptions.php',
     'Nette\\SmartObject' => $vendorDir . '/nette/utils/src/SmartObject.php',
     'Nette\\StaticClass' => $vendorDir . '/nette/utils/src/StaticClass.php',
     'Nette\\UnexpectedValueException' => $vendorDir . '/nette/utils/src/exceptions.php',
