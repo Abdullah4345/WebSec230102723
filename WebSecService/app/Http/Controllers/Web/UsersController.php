@@ -46,7 +46,7 @@ class UsersController extends Controller {
     public function doRegister(Request $request) {
         try {
             $this->validate($request, [
-                'name' => ['required', 'string', 'min:5'],
+                'name' => ['required', 'string', 'min:4'],
                 'email' => ['required', 'email', 'unique:users'],
                 'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
             ]);
@@ -75,7 +75,7 @@ class UsersController extends Controller {
     public function doLogin(Request $request) {
     	
     	if(!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
-            return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
+            return redirect()->back()->withInput($request->input())->withErrors('invalid creditials.');
 
         $user = User::where('email', $request->email)->first();
         Auth::setUser($user);
@@ -160,19 +160,52 @@ class UsersController extends Controller {
 
         if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
 
-        //$user->delete();
+        $user->delete();
 
         return redirect()->route('users');
     }
-    public function addCredit(Request $request) {
+
+    public function block_users(Request $request, User $user) {
+
+        if(!auth()->user()->hasPermissionTo('block_users')) abort(401);
+
+        $user->block_users();
+
+        return redirect()->route('users');
+    }
+
+
+    public function blocked(Request $request, User $user) {
+
+        if(!auth()->user()->hasPermissionTo('blocked')) abort(401);
+
+        $user->blocked();
+
+        return redirect()->route('users');
+    }
+
+
+    public function block_(Request $request, User $user) {
+
+        if(!auth()->user()->hasPermissionTo('block_users')) abort(401);
+
+        $user->block_users();
+
+        return redirect()->route('users');
+    }
+
+
+
+    public function addCredit(Request $request, \App\Models\User $user)
+    {
         $request->validate([
             'amount' => ['required', 'numeric', 'min:1']
         ]);
-    
-        $user = auth()->user();
+
+        // Now $user is the target user that the admin/employee wants to add credit for.
         $user->credit += $request->amount;
         $user->save();
-    
+
         return redirect()->back()->with('success', 'Credit added successfully!');
     }
     

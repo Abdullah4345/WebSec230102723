@@ -104,7 +104,7 @@
                     @elseif(auth()->check())
                         <button class="btn btn-secondary" disabled>Not Enough Credit</button>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-warning">Login to Buy</a>
+                        <a href="{{ route('login') }}" class="btn btn-info">Login</a>
                     @endif
 
 
