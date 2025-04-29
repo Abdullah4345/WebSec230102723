@@ -85,7 +85,7 @@
                     </div>
 
                     <table class="table table-striped">
-                        <tr><th width="20%">Name</th><td>{{ $product->name }}</td></tr>
+                        <tr><th width="20%">Name</th><td>{!! $product->name !!}</td></tr>
                         <tr><th>Model</th><td>{{ $product->model }}</td></tr>
                         <tr><th>Code</th><td>{{ $product->code }}</td></tr>
                         <tr><th>Price</th><td>${{ number_format($product->price, 2) }}</td></tr>
@@ -96,7 +96,7 @@
                     <!-- Buy Button: Only if user has enough credit -->
                     @if(auth()->check() && auth()->user()->credit >= $product->price && $product->quantity > 0)
                     <form action="{{ route('buy_product', $product->id) }}" method="POST">
-                        @csrf
+                        {{-- @csrf --}}
                         <button type="submit" class="btn btn-primary">Buy</button>
                     </form>
                     @elseif($product->quantity == 0)
