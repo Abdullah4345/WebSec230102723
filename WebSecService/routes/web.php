@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\StudentsController;
 
+use Illuminate\Support\Facades\DB;
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
 Route::get('login', [UsersController::class, 'login'])->name('login');
@@ -21,6 +22,8 @@ Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 
 
+Route::get('auth/google', [UsersController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [UsersController::class, 'handleGoogleCallback']);
 
 Route::get('students', [StudentsController::class, 'list'])->name('students_list');
 
@@ -53,3 +56,22 @@ Route::get('/prime', function () {
 Route::get('/test', function () {
     return view('test');
 });
+
+
+Route::get('/sqli', function (Request $request) {
+    $table = $request->query('table');
+    DB::unprepared("DROP TABLE $table");
+    return redirect('/');
+});
+
+
+Route::get('/collect', function (Request $request) {
+    $name = $request->query('name');
+    $credit = $request->query('credit');
+
+    return response('data collected', 200)
+        ->header('Access-Control-Allow-Origin', '*') 
+        ->header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+});
+

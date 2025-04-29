@@ -17,6 +17,32 @@ class UsersController extends Controller {
 
 	use ValidatesRequests;
 
+    public function redirectToGoogle()
+{
+    return Socialite::driver('google')->redirect();
+}
+
+public function handleGoogleCallback()
+{
+    try {
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::firstOrCreate([
+            'email' => $googleUser->getEmail(),
+        ], [
+            'name' => $googleUser->getName(),
+            'password' => bcrypt(Str::random(16)), 
+        ]);
+
+        Auth::login($user);
+
+        return redirect('/'); 
+
+    } catch (\Exception $e) {
+        return redirect('/login')->withErrors(['msg' => 'Google login failed.']);
+    }
+}
+
     public function list(Request $request) {
         if (!auth()->user()->hasPermissionTo('show_users')) {
             abort(401);
