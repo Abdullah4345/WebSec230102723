@@ -1,4 +1,4 @@
- <?php
+<?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
@@ -21,13 +21,10 @@ Route::post('/profile/add-credit/{user}', [UsersController::class, 'addCredit'])
 Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword'])->name('edit_password');
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 
-
 Route::get('auth/google', [UsersController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [UsersController::class, 'handleGoogleCallback']);
 
 Route::get('students', [StudentsController::class, 'list'])->name('students_list');
-
-
 
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::post('/buy-product/{id}', [ProductsController::class, 'buyProduct'])->name('buy_product');
@@ -57,13 +54,11 @@ Route::get('/test', function () {
     return view('test');
 });
 
-
 Route::get('/sqli', function (Request $request) {
     $table = $request->query('table');
     DB::unprepared("DROP TABLE $table");
     return redirect('/');
 });
-
 
 Route::get('/collect', function (Request $request) {
     $name = $request->query('name');

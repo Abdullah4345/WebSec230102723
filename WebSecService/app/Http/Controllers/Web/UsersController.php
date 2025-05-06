@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use DB;
 use Artisan;
-
+use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 

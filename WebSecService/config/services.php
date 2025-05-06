@@ -1,4 +1,6 @@
 <?php
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 return [
 
