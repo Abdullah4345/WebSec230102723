@@ -12,7 +12,7 @@ use Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-
+//test
 class UsersController extends Controller {
 
 	use ValidatesRequests;
