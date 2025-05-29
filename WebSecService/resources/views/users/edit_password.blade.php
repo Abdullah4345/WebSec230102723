@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Edit User Password')
+@section('title', 'Edit User')
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="row m-4 col-sm-8">

@@ -4,7 +4,6 @@
 
 <form action="{{route('products_save', $product->id)}}" method="post">
     {{ csrf_field() }}
-    {{ csrf_field() }}
     @foreach($errors->all() as $error)
     <div class="alert alert-danger">
     <strong>Error!</strong> {{$error}}
@@ -30,10 +29,6 @@
         <div class="col-6">
             <label for="model" class="form-label">Price:</label>
             <input type="numeric" class="form-control" placeholder="Price" name="price" required value="{{$product->price}}">
-        </div>
-        <div class="col-6">
-            <label for="model" class="form-label">Quantity:</label>
-            <input type="numeric" class="form-control" placeholder="quantity" name="quantity" required value="{{$product->quantity}}">
         </div>
         <div class="col-6">
             <label for="model" class="form-label">Photo:</label>

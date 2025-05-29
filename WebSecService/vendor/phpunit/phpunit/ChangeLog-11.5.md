@@ -2,6 +2,47 @@
 
 All notable changes of the PHPUnit 11.5 release series are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [11.5.21] - 2025-05-21
+
+### Changed
+
+* [#6210](https://github.com/sebastianbergmann/phpunit/pull/6210): Set default Clover coverage project name
+* [#6217](https://github.com/sebastianbergmann/phpunit/pull/6217): Improve the error message when `createStubForIntersectionOfInterfaces()` is called with a class
+
+## [11.5.20] - 2025-05-11
+
+### Fixed
+
+* [#6192](https://github.com/sebastianbergmann/phpunit/issues/6192): Reverted change made in PHPUnit 11.5.19 due to regression
+* [#6199](https://github.com/sebastianbergmann/phpunit/issues/6199): `assertEmpty()` and `assertNotEmpty()` use overly restrictive `phpstan-assert empty` directives
+
+## [11.5.19] - 2025-05-02
+
+### Added
+
+* `displayDetailsOnAllIssues` attribute on the `<phpunit>` element of the XML configuration file and `--display-all-issues` CLI option for controlling whether PHPUnit should display details on all issues that are triggered (default: `false`)
+* `failOnAllIssues` attribute on the `<phpunit>` element of the XML configuration file and `--fail-on-all-issues` CLI option for controlling whether PHPUnit should fail on all issues that are triggered (default: `false`)
+
+### Changed
+
+* [#5956](https://github.com/sebastianbergmann/phpunit/issues/5956): Improved handling of deprecated `E_STRICT` constant
+
+### Fixed
+
+* [#6192](https://github.com/sebastianbergmann/phpunit/issues/6192): Positive `%a` and `%A` matches are not ignored from diff when `EXPECTF` fails
+
+## [11.5.18] - 2025-04-22
+
+### Changed
+
+* When gathering the telemetry information that each event has, the real size of memory allocated from the operating system is no longer used as this is grown by PHP's memory manager in chunks that are so large that small(er) increases in peak memory usage cannot be seen
+* The peak memory usage returned by `memory_get_peak_usage()` is now reset immediately before the `Test\Prepared` event is emitted using `memory_reset_peak_usage()` so that (memory usage at `Test\Finished` - memory usage at `Test\Prepared`) is a better approximation of the memory usage of the test
+* The string representation of `Telemetry\Info` now uses peak memory usage instead of memory usage (this affects `--log-events-verbose-text`) 
+
+### Fixed
+
+* A "Before Test Method Errored" event is no longer emitted when a test is skipped in a "before test" method
+
 ## [11.5.17] - 2025-04-08
 
 ### Fixed
@@ -160,6 +201,10 @@ All notable changes of the PHPUnit 11.5 release series are documented in this fi
 * [#6055](https://github.com/sebastianbergmann/phpunit/issues/6055): `assertNotContainsOnly()` (use `assertContainsNotOnlyArray()`, `assertContainsNotOnlyBool()`, `assertContainsNotOnlyCallable()`, `assertContainsNotOnlyFloat()`, `assertContainsNotOnlyInt()`, `assertContainsNotOnlyIterable()`, `assertContainsNotOnlyNumeric()`, `assertContainsNotOnlyObject()`, `assertContainsNotOnlyResource()`, `assertContainsNotOnlyClosedResource()`, `assertContainsNotOnlyScalar()`, or `assertContainsNotOnlyString()` instead)
 * [#6059](https://github.com/sebastianbergmann/phpunit/issues/6059): `containsOnly()` (use `containsOnlyArray()`, `containsOnlyBool()`, `containsOnlyCallable()`, `containsOnlyFloat()`, `containsOnlyInt()`, `containsOnlyIterable()`, `containsOnlyNumeric()`, `containsOnlyObject()`, `containsOnlyResource()`, `containsOnlyClosedResource()`, `containsOnlyScalar()`, or `containsOnlyString()` instead)
 
+[11.5.21]: https://github.com/sebastianbergmann/phpunit/compare/11.5.20...11.5.21
+[11.5.20]: https://github.com/sebastianbergmann/phpunit/compare/11.5.19...11.5.20
+[11.5.19]: https://github.com/sebastianbergmann/phpunit/compare/11.5.18...11.5.19
+[11.5.18]: https://github.com/sebastianbergmann/phpunit/compare/11.5.17...11.5.18
 [11.5.17]: https://github.com/sebastianbergmann/phpunit/compare/11.5.16...11.5.17
 [11.5.16]: https://github.com/sebastianbergmann/phpunit/compare/11.5.15...11.5.16
 [11.5.15]: https://github.com/sebastianbergmann/phpunit/compare/11.5.14...11.5.15

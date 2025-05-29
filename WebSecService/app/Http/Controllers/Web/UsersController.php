@@ -7,92 +7,63 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 use DB;
 use Artisan;
-use Laravel\Socialite\Facades\Socialite;
+use Carbon\Carbon;
+
+
+use App\Mail\VerificationEmail;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-//test
+
 class UsersController extends Controller {
 
 	use ValidatesRequests;
 
-    public function redirectToGoogle()
-{
-    return Socialite::driver('google')->redirect();
-}
-
-public function handleGoogleCallback()
-{
-    try {
-        $googleUser = Socialite::driver('google')->user();
-
-        $user = User::firstOrCreate([
-            'email' => $googleUser->getEmail(),
-        ], [
-            'name' => $googleUser->getName(),
-            'password' => bcrypt(Str::random(16)), 
-        ]);
-
-        Auth::login($user);
-
-        return redirect('/'); 
-
-    } catch (\Exception $e) {
-        return redirect('/login')->withErrors(['msg' => 'Google login failed.']);
-    }
-}
-
     public function list(Request $request) {
-        if (!auth()->user()->hasPermissionTo('show_users')) {
-            abort(401);
-        }
-    
+        if(!auth()->user()->hasPermissionTo('show_users'))abort(401);
         $query = User::select('*');
-    
-        if (!auth()->user()->hasPermissionTo('admin_users')) {
-            $query->whereHas('roles', function ($q) {
-                $q->where('name', 'Customer');
-            });
-        }
-        $query->when($request->keywords, function ($q) use ($request) {
-            $q->where("name", "like", "%{$request->keywords}%");
-        });
-    
+        $query->when($request->keywords, 
+        fn($q)=> $q->where("name", "like", "%$request->keywords%"));
         $users = $query->get();
-    
         return view('users.list', compact('users'));
     }
-       
 
 	public function register(Request $request) {
         return view('users.register');
     }
 
     public function doRegister(Request $request) {
-        try {
-            $this->validate($request, [
-                'name' => ['required', 'string', 'min:4'],
-                'email' => ['required', 'email', 'unique:users'],
-                'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->withInput()->withErrors([$e->getMessage()]);
-        }
-    
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password); 
-        $user->save();
-    
-        $user->assignRole('Customer');
-    
-        Auth::login($user);
-    
-        return redirect('/products')->with('success', 'Registration successful!');
+
+    	try {
+    		$this->validate($request, [
+	        'name' => ['required', 'string', 'min:5'],
+	        'email' => ['required', 'email', 'unique:users'],
+	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+	    	]);
+    	}
+    	catch(\Exception $e) {
+
+    		return redirect()->back()->withInput($request->input())->withErrors('Invalid registration information.');
+    	}
+
+    	
+    	$user =  new User();
+	    $user->name = $request->name;
+	    $user->email = $request->email;
+	    $user->password = bcrypt($request->password); //Secure
+	    $user->save();
+
+        $title = "Verification Link";
+        $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
+        $link = route("verify", ['token' => $token]);
+        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
+        return redirect('/');
+
     }
-    
 
     public function login(Request $request) {
         return view('users.login');
@@ -101,10 +72,14 @@ public function handleGoogleCallback()
     public function doLogin(Request $request) {
     	
     	if(!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
-            return redirect()->back()->withInput($request->input())->withErrors('invalid creditials.');
+            return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
 
         $user = User::where('email', $request->email)->first();
         Auth::setUser($user);
+
+        if(!$user->email_verified_at)
+            return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified.');
+
 
         return redirect('/');
     }
@@ -186,55 +161,10 @@ public function handleGoogleCallback()
 
         if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
 
-        $user->delete();
+        //$user->delete();
 
         return redirect()->route('users');
     }
-
-    public function block_users(Request $request, User $user) {
-
-        if(!auth()->user()->hasPermissionTo('block_users')) abort(401);
-
-        $user->block_users();
-
-        return redirect()->route('users');
-    }
-
-
-    public function blocked(Request $request, User $user) {
-
-        if(!auth()->user()->hasPermissionTo('blocked')) abort(401);
-
-        $user->blocked();
-
-        return redirect()->route('users');
-    }
-
-
-    public function block_(Request $request, User $user) {
-
-        if(!auth()->user()->hasPermissionTo('block_users')) abort(401);
-
-        $user->block_users();
-
-        return redirect()->route('users');
-    }
-
-
-
-    public function addCredit(Request $request, \App\Models\User $user)
-    {
-        $request->validate([
-            'amount' => ['required', 'numeric', 'min:1']
-        ]);
-
-        // Now $user is the target user that the admin/employee wants to add credit for.
-        $user->credit += $request->amount;
-        $user->save();
-
-        return redirect()->back()->with('success', 'Credit added successfully!');
-    }
-    
 
     public function editPassword(Request $request, User $user = null) {
 
@@ -270,4 +200,39 @@ public function handleGoogleCallback()
 
         return redirect(route('profile', ['user'=>$user->id]));
     }
+
+    public function verify(Request $request) {
+   
+        $decryptedData = json_decode(Crypt::decryptString($request->token), true);
+        $user = User::find($decryptedData['id']);
+        if(!$user) abort(401);
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+
+        return view('users.verified', compact('user'));
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback() {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            $user = User::updateOrCreate([
+                'google_id' => $googleUser->id,
+            ], [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_token' => $googleUser->token,
+                'google_refresh_token' => $googleUser->refreshToken,
+            ]);
+            Auth::login($user);
+            return redirect('/');
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Google login failed.'); // Handle errors
+        }
+    }
+
 } 

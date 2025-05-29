@@ -9,7 +9,6 @@ class Product extends Model  {
         'code',
         'name',
         'price',
-        'quantity',
         'model',
         'description',
         'photo'

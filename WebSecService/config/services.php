@@ -1,6 +1,4 @@
 <?php
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 
 return [
 
@@ -19,11 +17,6 @@ return [
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
-    'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
-    ],
 
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
@@ -40,6 +33,12 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
 ];

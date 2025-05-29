@@ -73,15 +73,15 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     private static array $freshCache = [];
 
-    public const VERSION = '7.2.5';
-    public const VERSION_ID = 70205;
+    public const VERSION = '7.3.0';
+    public const VERSION_ID = 70300;
     public const MAJOR_VERSION = 7;
-    public const MINOR_VERSION = 2;
-    public const RELEASE_VERSION = 5;
+    public const MINOR_VERSION = 3;
+    public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 
-    public const END_OF_MAINTENANCE = '07/2025';
-    public const END_OF_LIFE = '07/2025';
+    public const END_OF_MAINTENANCE = '05/2025';
+    public const END_OF_LIFE = '01/2026';
 
     public function __construct(
         protected string $environment,
@@ -595,7 +595,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     protected function buildContainer(): ContainerBuilder
     {
-        foreach (['cache' => $this->getCacheDir(), 'build' => $this->warmupDir ?: $this->getBuildDir(), 'logs' => $this->getLogDir()] as $name => $dir) {
+        foreach (['cache' => $this->getCacheDir(), 'build' => $this->warmupDir ?: $this->getBuildDir()] as $name => $dir) {
             if (!is_dir($dir)) {
                 if (false === @mkdir($dir, 0777, true) && !is_dir($dir)) {
                     throw new \RuntimeException(\sprintf('Unable to create the "%s" directory (%s).', $name, $dir));
